@@ -243,7 +243,7 @@ class StringConsentDecoder:
         return vendors
 
     def parse_consent(self):
-        from app.consent import Consent
+        from GDPRconsent.consent import Consent
 
         max_vendors = self.get_max_vendor_id()
         enconding_type = self.get_encoding_type()

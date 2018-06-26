@@ -54,6 +54,11 @@ class TestConsent(unittest.TestCase):
         self.assertEqual(consent_dict['vendors_consent']['9'], 0)
         self.assertEqual(consent_dict['vendors_consent']['10'], 1)
 
+    def test_consent_raise_error_when_type_is_not_bytes(self):
+        string_consent = 'BOEFEAyOEFEAyAHABDENAI4AAAB9vABAASA'
+        with self.assertRaises(TypeError):
+            consent = Consent.from_bytes(string_consent)
+
 
 if __name__ == '__main__':
     unittest.main()
