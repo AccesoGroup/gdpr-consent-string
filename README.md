@@ -1,10 +1,11 @@
 # gdpr-consent-string
-Python implementation of parser for GDPR string consent
+Python implementation of parser for GDPR consent string
 
 ## Installing
-Install and update using pip:
-
-    pip install gdpr-consent-string
+Install using pip:
+```bash
+pip install git+https://github.com/AccesoGroup/gdpr-consent-string
+```
 
 ## Usage
 
@@ -46,9 +47,12 @@ consent.to_json()
 }
 ```
 
+## State
+At this moment this software has not been heavily tested for all kinds
+of consent strings. Use with caution.
+
 ## Links
 
- GDPR-Transparency-and-Consent-Framework - string and vendor list formats v1.1 Final.md:
- https://github.com/InteractiveAdvertisingBureau/GDPR-Transparency-and-Consent-Framework/blob/master/Consent%20string%20and%20vendor%20list%20formats%20v1.1%20Final.md#vendor-consent-string-format
-
+ GDPR-Transparency-and-Consent-Framework - string and vendor list formats v1.1:
+ https://github.com/InteractiveAdvertisingBureau/GDPR-Transparency-and-Consent-Framework/blob/master/Consent%20string%20and%20vendor%20list%20formats%20v1.1%20Final.md
 

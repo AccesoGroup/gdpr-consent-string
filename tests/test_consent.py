@@ -1,7 +1,7 @@
 import unittest
 import json
 
-from app.consent import Consent
+from GDPRconsent.consent import Consent
 
 
 class TestConsent(unittest.TestCase):
