@@ -112,15 +112,11 @@ class StringConsentDecoder:
         self.str_code = self.transform_to_padded_binary_consent_string(str_code)
 
     def transform_to_padded_binary_consent_string(self, consent_string):
-        #padding = int(((len(consent_string) / 8)) + 1) * 8 - len(consent_string)
-        #code = consent_string + (b'=' * padding)
-        #code = base64.urlsafe_b64decode(code)
-        code = bin(int(codecs.encode(consent_string, 'hex'), 16))[2:]
-        print(len(code))
-        leading_zeros = '0' * (len(code) % 8 - 2)
-        print(leading_zeros)
-        print(code)
-        print(leading_zeros + code)
+        padding = int(((len(consent_string) / 8)) + 1) * 8 - len(consent_string)
+        code = consent_string + (b'=' * padding)
+        code = base64.urlsafe_b64decode(code)
+        code = bin(int(codecs.encode(code, 'hex'), 16))[2:]
+        leading_zeros = '0' * (len(code) % 6)
         return leading_zeros + code
 
     def get_binary_string(self, field):

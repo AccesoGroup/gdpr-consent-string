@@ -2,6 +2,7 @@ import unittest
 import json
 
 from GDPRconsent.consent import Consent
+from GDPRconsent.consent_decoder import StringConsentDecoder
 
 
 class TestConsent(unittest.TestCase):
@@ -21,6 +22,16 @@ class TestConsent(unittest.TestCase):
         )
         self.assertEqual(consent.vendors_consent[9], 0)
         self.assertEqual(consent.vendors_consent[10], 1)
+
+    def test_consent_example_binary_string(self):
+
+        string_consent = b'BOEFEAyOEFEAyAHABDENAI4AAAB9vABAASA'
+        consent = StringConsentDecoder(string_consent)
+
+        self.assertEqual(
+            consent.str_code,
+            '0000010011100001000001010001000000001100100011100001000001010001000000001100100000000001110000000000010000110001000011010000000010001110000000000000000000000000011111011011110000000000010000000000000100100000'
+        )
 
     def test_consent_to_dict(self):
         string_consent = b'BOEFEAyOEFEAyAHABDENAI4AAAB9vABAASA'
@@ -53,11 +64,6 @@ class TestConsent(unittest.TestCase):
         )
         self.assertEqual(consent_dict['vendors_consent']['9'], 0)
         self.assertEqual(consent_dict['vendors_consent']['10'], 1)
-
-    def test_consent_raise_error_when_type_is_not_bytes(self):
-        string_consent = 'BOEFEAyOEFEAyAHABDENAI4AAAB9vABAASA'
-        with self.assertRaises(TypeError):
-            consent = Consent.from_bytes(string_consent)
 
 
 if __name__ == '__main__':
