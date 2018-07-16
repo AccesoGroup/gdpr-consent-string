@@ -210,15 +210,16 @@ class StringConsentDecoder:
             self.get_field_value(RANGE_ENTRY['end_vendor_id']),
         )
 
-    def parse_vendors_using_bit_field(self, consent):
+    def parse_vendors_using_bit_field(self, consent, max_vendor):
         for vendor_id, consent_value in enumerate(self.str_code[173:]):
+            if vendor_id + 1 > max_vendor: break
             consent.add_vendor(vendor_id + 1, consent_value)
 
-    def parse_vendors_using_range_section(self, consent, max_vendors):
+    def parse_vendors_using_range_section(self, consent, max_vendor):
         default_consent = bool(self.get_default_consent())
         num_entries = self.get_num_entries()
         opp_vendors = self.parse_vendors_range_entries(num_entries)
-        for vendor_id in range(max_vendors):
+        for vendor_id in range(max_vendor):
             consent.add_vendor(
                 vendor_id,
                 int(
@@ -263,7 +264,7 @@ class StringConsentDecoder:
         )
 
         if enconding_type == 0:  # BitField
-            self.parse_vendors_using_bit_field(consent)
+            self.parse_vendors_using_bit_field(consent, max_vendors)
         else:  # RangeSection
             self.parse_vendors_using_range_section(consent, max_vendors)
         return consent
