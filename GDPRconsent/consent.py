@@ -29,7 +29,7 @@ class Consent:
         self.vendors_consent = {}
 
     def add_vendor(self, vendor_id, consent):
-        self.vendors_consent[vendor_id] = consent
+        self.vendors_consent[vendor_id] = int(consent)
 
     def to_json(self):
         return json.dumps({

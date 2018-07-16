@@ -116,7 +116,7 @@ class StringConsentDecoder:
         code = consent_string + (b'=' * padding)
         code = base64.urlsafe_b64decode(code)
         code = bin(int(codecs.encode(code, 'hex'), 16))[2:]
-        leading_zeros = '0' * (len(code) % 6)
+        leading_zeros = '0' * (int((len(code) / 8) + 1) * 8 - len(code))
         return leading_zeros + code
 
     def get_binary_string(self, field):
