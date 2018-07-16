@@ -1,5 +1,6 @@
 from datetime import datetime
 import base64
+import codecs
 
 
 VENDOR_CONSENT_STRING_FORMAT = {
@@ -111,13 +112,16 @@ class StringConsentDecoder:
         self.str_code = self.transform_to_padded_binary_consent_string(str_code)
 
     def transform_to_padded_binary_consent_string(self, consent_string):
-        padding = int(((len(consent_string) / 8)) + 1) * 8 - len(consent_string)
-        code = consent_string + (b'=' * padding)
-        code = base64.urlsafe_b64decode(code)
-        return format(
-            int.from_bytes(code, byteorder='big'),
-            '0>' + str(len(code) * 8) + 'b'
-        )
+        #padding = int(((len(consent_string) / 8)) + 1) * 8 - len(consent_string)
+        #code = consent_string + (b'=' * padding)
+        #code = base64.urlsafe_b64decode(code)
+        code = bin(int(codecs.encode(consent_string, 'hex'), 16))[2:]
+        print(len(code))
+        leading_zeros = '0' * (len(code) % 8 - 2)
+        print(leading_zeros)
+        print(code)
+        print(leading_zeros + code)
+        return leading_zeros + code
 
     def get_binary_string(self, field):
         return self.str_code[
