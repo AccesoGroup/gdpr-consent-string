@@ -104,6 +104,18 @@ class TestConsent(unittest.TestCase):
         self.assertEqual(consent.vendors_consent[76], 1)
         self.assertEqual(consent.vendors_consent[1], 0)
 
+    def test_my_consent_decoder_string(self):
+        string_consent = 'BOP2j8_OP2j8_AHABBESA5-AAAAaZ7______b9_3__7_9uz_Cv_' \
+                         'K7Xf_nnW0721PVA_rXOz_gE7YRAEIAkAAAAAAAAAAAAAAAAAA'
+        consent = Consent.get_my_consent(string_consent, '11111', vendor_id=266)
+
+        self.assertEqual(consent, 1)
+
+    def test_my_consent_decoder_fake(self):
+        string_consent = 'BOP2eaEOP2eaEAAAAAAAA7-AAAAEwAMAAAgAAIAAQIA'
+        consent = Consent.get_my_consent(string_consent, '11111', vendor_id=266)
+
+        self.assertEqual(consent, 0)
 
 if __name__ == '__main__':
     unittest.main()

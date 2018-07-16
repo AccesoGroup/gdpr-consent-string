@@ -66,6 +66,11 @@ class Consent:
     @staticmethod
     def from_bytes(consent_string):
         from GDPRconsent.consent_decoder import StringConsentDecoder
-        if type(consent_string) != bytes:
-            raise TypeError('Consent should be bytes type')
         return StringConsentDecoder(consent_string).parse_consent()
+
+    @staticmethod
+    def get_my_consent(consent_string, purposes='11111', vendor_id=1):
+        from GDPRconsent.consent_decoder import StringConsentDecoder
+        return StringConsentDecoder(consent_string).parse_my_consent(
+            purposes='11111', vendor_id=1
+        )

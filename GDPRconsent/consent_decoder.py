@@ -210,22 +210,24 @@ class StringConsentDecoder:
             self.get_field_value(RANGE_ENTRY['end_vendor_id']),
         )
 
-    def parse_vendors_using_bit_field(self, consent, max_vendor):
+    def parse_vendors_using_bit_field(self, max_vendor):
+        consent_dict = {}
         for vendor_id, consent_value in enumerate(self.str_code[173:]):
             if vendor_id + 1 > max_vendor: break
-            consent.add_vendor(vendor_id + 1, consent_value)
+            consent_dict[vendor_id + 1] = int(consent_value)
+        return consent_dict
 
-    def parse_vendors_using_range_section(self, consent, max_vendor):
+    def parse_vendors_using_range_section(self, max_vendor):
+        consent_dict = {}
         default_consent = bool(self.get_default_consent())
         num_entries = self.get_num_entries()
         opp_vendors = self.parse_vendors_range_entries(num_entries)
         for vendor_id in range(max_vendor):
-            consent.add_vendor(
-                vendor_id,
-                int(
-                    default_consent if vendor_id not in opp_vendors
-                    else not default_consent)
+            consent_dict[vendor_id] = int(
+                default_consent if vendor_id not in opp_vendors
+                else not default_consent
             )
+        return consent_dict
 
     def parse_vendors_range_entries(self, num_entries):
         vendors = []
@@ -264,7 +266,41 @@ class StringConsentDecoder:
         )
 
         if enconding_type == 0:  # BitField
-            self.parse_vendors_using_bit_field(consent, max_vendors)
+            consent.vendors_consent = \
+                self.parse_vendors_using_bit_field(max_vendors)
         else:  # RangeSection
-            self.parse_vendors_using_range_section(consent, max_vendors)
+            consent.vendors_consent = \
+                self.parse_vendors_using_range_section(max_vendors)
         return consent
+
+    def parse_my_consent(self, purposes='11111', vendor_id=1):
+
+        left_zero_padding = (24 - len(purposes)) * '0'
+        purposes = purposes + left_zero_padding
+
+        try:
+            max_vendors = self.get_max_vendor_id()
+            enconding_type = self.get_encoding_type()
+            purposes_allowed = self.get_purposes_allowed()
+
+            if enconding_type == 0:  # BitField
+                consent = \
+                    self.parse_vendors_using_bit_field(max_vendors)
+            else:  # RangeSection
+                consent = \
+                    self.parse_vendors_using_range_section(max_vendors)
+
+            allow_for_purposes = all(
+                [
+                    (int(my_pro) - int(allow_pro)) <= 0
+                    for my_pro, allow_pro in zip(purposes, purposes_allowed)
+                ]
+            )
+        except:
+            return -1
+
+        if consent[vendor_id] and allow_for_purposes:
+            return 1
+        else:
+            return 0
+
