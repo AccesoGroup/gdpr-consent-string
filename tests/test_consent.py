@@ -107,7 +107,9 @@ class TestConsent(unittest.TestCase):
     def test_my_consent_decoder_string(self):
         string_consent = 'BOP2j8_OP2j8_AHABBESA5-AAAAaZ7______b9_3__7_9uz_Cv_' \
                          'K7Xf_nnW0721PVA_rXOz_gE7YRAEIAkAAAAAAAAAAAAAAAAAA'
-        consent = Consent.get_my_consent(string_consent, '11111', vendor_id=266)
+        consent = Consent.get_my_consent(
+            string_consent, purposes='11111', vendor_id=266
+        )
 
         self.assertEqual(consent, 1)
 
@@ -116,6 +118,35 @@ class TestConsent(unittest.TestCase):
         consent = Consent.get_my_consent(string_consent, '11111', vendor_id=266)
 
         self.assertEqual(consent, 0)
+
+    def test_my_consent_decoder_with_too_much_propuses(self):
+        string_consent = 'BOP2j8_OP2j8_AHABBESA5-AAAAaZ7______b9_3__7_9uz_Cv_' \
+                         'K7Xf_nnW0721PVA_rXOz_gE7YRAEIAkAAAAAAAAAAAAAAAAAA'
+        consent = Consent.get_my_consent(
+            string_consent, purposes='111111111', vendor_id=266
+        )
+
+        self.assertEqual(consent, 0)
+
+    def test_check_if_my_purposes_are_allowed(self):
+        string_consent = 'BOP2j8_OP2j8_AHABBESA5-AAAAaZ7______b9_3__7_9uz_Cv_' \
+                         'K7Xf_nnW0721PVA_rXOz_gE7YRAEIAkAAAAAAAAAAAAAAAAAA'
+        consent = StringConsentDecoder(string_consent)
+
+        self.assertFalse(consent.check_if_my_purposes_are_allowed('111111'))
+        self.assertTrue(consent.check_if_my_purposes_are_allowed('11111'))
+
+    def test_check_if_my_purposes_invalid_string(self):
+        """ Non valid GDPR String should return -1
+
+        """
+        string_consent = 'BOP2j8_OP2j8_AHABBESA5-AAAAaZ9'
+        consent = Consent.get_my_consent(
+            string_consent, purposes='11111', vendor_id=266
+        )
+
+
+        self.assertEqual(consent, -1)
 
 if __name__ == '__main__':
     unittest.main()
