@@ -109,7 +109,9 @@ RANGE_ENTRY = {
 
 class StringConsentDecoder:
     def __init__(self, str_code):
-        self.str_code = self.transform_to_padded_binary_consent_string(str_code)
+        self.str_code = self.transform_to_padded_binary_consent_string(
+            str(str_code)
+        )
 
     def transform_to_padded_binary_consent_string(self, consent_string):
         padding = int(((len(consent_string) / 8)) + 1) * 8 - len(consent_string)

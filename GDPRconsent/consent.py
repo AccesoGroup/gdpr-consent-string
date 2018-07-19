@@ -69,11 +69,16 @@ class Consent:
         return StringConsentDecoder(consent_string).parse_consent()
 
     @staticmethod
-    def get_my_consent(consent_string, purposes='11111', vendor_id=1):
+    def get_my_consent(
+            consent_string,
+            purposes='11111',
+            vendor_id=1,
+            default_value=-1
+    ):
         from GDPRconsent.consent_decoder import StringConsentDecoder
         try:
             return StringConsentDecoder(consent_string).parse_my_consent(
                 purposes=purposes, vendor_id=1
             )
         except Exception:
-            return -1
+            return default_value
